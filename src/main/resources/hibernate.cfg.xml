@@ -1,0 +1,51 @@
+<?xml version='1.0' encoding='utf-8'?>
+<!DOCTYPE hibernate-configuration PUBLIC
+        "-//Hibernate/Hibernate Configuration DTD 3.0//EN"
+        "http://www.hibernate.org/dtd/hibernate-configuration-3.0.dtd">
+
+
+<hibernate-configuration>
+	<session-factory>
+
+        <!-- Connection settings -->
+        <property name="hibernate.connection.driver_class">org.postgresql.Driver</property>
+        <property name="hibernate.connection.url">jdbc:postgresql://credo-dev.c0oqcs2ftfoe.us-west-2.rds.amazonaws.com:5432/customers</property>
+        <property name="hibernate.connection.username">ilendx</property>
+        <property name="hibernate.connection.password">credo-dev</property>
+
+        <!-- SQL dialect -->
+        <property name="hibernate.dialect">org.hibernate.dialect.PostgreSQL82Dialect</property>
+
+		 <!-- JDBC connection pool (use the built-in) -->
+		<property name="connection.pool_size">10</property>
+        <!-- Print executed SQL to stdout -->
+        <property name="show_sql">true</property>
+
+        <!-- Drop and re-create all database on startup -->
+        <property name="hibernate.hbm2ddl.auto">create-drop</property>
+
+        <!-- Annotated entity classes -->
+        <mapping class="com.jvmhub.tutorial.entity.AppUser"/>
+        
+    </session-factory>
+
+<!-- 	<session-factory>
+		<!-- JDBC connection pool (use the built-in) -->
+<!-- 		<property name="connection.pool_size">10</property>  -->
+
+		<!-- To enable the current session tracking by thread of execution -->
+<!-- 		<property name="hibernate.current_session_context_class">thread</property>  -->
+
+		<!-- SQL dialect -->
+<!-- 		<property name="dialect">com.ilendx.framework.functions.CustomPostgresDialect</property> -->
+
+		<!-- Echo all executed SQL to stdout -->
+<!-- 		<property name="show_sql">true</property> -->
+
+		<!-- Echo all executed SQL to stdout in well formatted way -->
+<!-- 		<property name="format_sql">false</property>  -->
+
+		<!-- TODO: Drop and re-create the database schema on startup -->
+		<!-- <property name="hibernate.hbm2ddl.auto">create-drop</property> -->
+<!-- 	</session-factory> -->
+</hibernate-configuration>
