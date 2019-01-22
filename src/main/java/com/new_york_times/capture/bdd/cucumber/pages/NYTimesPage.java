@@ -9,7 +9,6 @@ import java.util.List;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.support.FindBy;
-import com.new_york_times.capture.bdd.cucumber.common.*;
 
 public class NYTimesPage extends PageObject{
 	
