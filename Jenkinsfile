@@ -1,75 +1,105 @@
-
 pipeline {
    
    agent any
    
    parameters {
-   		  choice(name: 'SITES', choices: 'NYTimes\nCNN\nFoxNews', description: 'Select a site to build: ')
-    
+   		  choice(name: 'SITES', choices: 'NYTimes\nCNN\nFoxNews', description: 'Select a site to build: ') 
     }
-    
-    stages {
-    
-      stage ('Compile Stage') {
-      	
-          	steps {
-                withEnv(["JAVA_HOME=${ tool 'JDK 8' }", "PATH+MAVEN=${tool 'Maven 3'}/bin:${env.JAVA_HOME}/bin"]) {
-                      sh 'mvn clean'
-                }
-          	}
-         
-      }
-        
-      stage ('Stage 1: Firefox') {
-      
-             
+  stages{
+  
+    stage ('Create test image') {
             steps {
-                withEnv(["JAVA_HOME=${ tool 'JDK 8' }", "PATH+MAVEN=${tool 'Maven 3'}/bin:${env.JAVA_HOME}/bin"]) {
-                
+                script {
+                        def image = docker.build("web-app:${BUILD_NUMBER}")
+                        echo "Debug: Before push to registry"
+                }
+            }
+          }
+
+
+    stage ('Build on image'){ 
+           agent {
+                docker {
+                        image "web-app:${BUILD_NUMBER}"
+                        reuseNode true
+                        }
+                     }
+              environment {
+                      HOME = "${WORKSPACE}"
+                      
+                      }
+              steps {
+                      sh 'env'
+                      sh 'mvn clean -X'
+                           }
+                         }
+         
+      stage ('Stage 1: Firefox') {
+          agent {
+              docker {
+                        image "web-app:${BUILD_NUMBER}"
+                        reuseNode true
+                        }
+                     }
+              environment {
+                      HOME = "${WORKSPACE}"
+                      
+                      }
+            steps {
                     script {
                        if ("${params.SITES}" == "NYTimes") {
                             sh 'mvn verify -Dcontext=firefox -Dwebdriver.driver=firefox'	
                        }
-                       if ("${params.SITES}" == "CNN") {
+                      else { if ("${params.SITES}" == "CNN") {
                             sh 'mvn verify -Dcontext=firefox -Dwebdriver.driver=firefox'	
                        }
-                       if ("${params.SITES}" == "FoxNews") {
+                            else { if ("${params.SITES}" == "FoxNews") {
                             sh 'mvn verify -Dcontext=firefox -Dwebdriver.driver=firefox'	
                        }
                        else {
                            currentBuild.result = "UNSTABLE"
+                          }  
+                         }
                        }
-                    }
                 }
             }
 
       }
             
       stage ('Stage 2: Chrome') {
-
+            agent {
+                docker {
+                        image "web-app:${BUILD_NUMBER}"
+                        reuseNode true
+                        }
+                     }
+              environment {
+                      HOME = "${WORKSPACE}"
+                      
+                      }
             steps {
-                withEnv(["JAVA_HOME=${ tool 'JDK 8' }", "PATH+MAVEN=${tool 'Maven 3'}/bin:${env.JAVA_HOME}/bin"]) {
                 
                     script {
                        if ("${params.SITES}" == "NYTimes") {
                             sh 'mvn verify -Dcontext=chrome -Dwebdriver.driver=chrome'	
                        }
-                       if ("${params.SITES}" == "CNN") {
+                      else{  if ("${params.SITES}" == "CNN") {
                             sh 'mvn verify -Dcontext=chrome -Dwebdriver.driver=chrome'	
                        }
-                       if ("${params.SITES}" == "FoxNews") {
+                           else { if ("${params.SITES}" == "FoxNews") {
                             sh 'mvn verify -Dcontext=chrome -Dwebdriver.driver=chrome'	
                        }
                        else {
                            currentBuild.result = "UNSTABLE"
                        }
-                       
-                    }
-                }
+                      }
+                     }
+                   }
+                
             }
 
       }
-      
+     
       stage ('Publish Reports') {
 
             steps {
@@ -77,8 +107,6 @@ pipeline {
             }
             
       }    
-       
+   
    }
-
-
 }
