@@ -29,8 +29,8 @@ pipeline {
                       
                       }
               steps {
-                      sh 'env'
-                      sh 'mvn clean -X'
+                      bat 'env'
+                      bat 'mvn clean -X'
                            }
                          }
          
@@ -48,13 +48,13 @@ pipeline {
             steps {
                     script {
                        if ("${params.SITES}" == "NYTimes") {
-                            sh 'mvn verify -Dcontext=firefox -Dwebdriver.driver=firefox'	
+                            bat 'mvn verify -Dcontext=firefox -Dwebdriver.driver=firefox'	
                        }
                       else { if ("${params.SITES}" == "CNN") {
-                            sh 'mvn verify -Dcontext=firefox -Dwebdriver.driver=firefox'	
+                            bat 'mvn verify -Dcontext=firefox -Dwebdriver.driver=firefox'	
                        }
                             else { if ("${params.SITES}" == "FoxNews") {
-                            sh 'mvn verify -Dcontext=firefox -Dwebdriver.driver=firefox'	
+                            bat 'mvn verify -Dcontext=firefox -Dwebdriver.driver=firefox'	
                        }
                        else {
                            currentBuild.result = "UNSTABLE"
@@ -81,13 +81,13 @@ pipeline {
                 
                     script {
                        if ("${params.SITES}" == "NYTimes") {
-                            sh 'mvn verify -Dcontext=chrome -Dwebdriver.driver=chrome'	
+                            bat 'mvn verify -Dcontext=chrome -Dwebdriver.driver=chrome'	
                        }
                       else{  if ("${params.SITES}" == "CNN") {
-                            sh 'mvn verify -Dcontext=chrome -Dwebdriver.driver=chrome'	
+                            bat 'mvn verify -Dcontext=chrome -Dwebdriver.driver=chrome'	
                        }
                            else { if ("${params.SITES}" == "FoxNews") {
-                            sh 'mvn verify -Dcontext=chrome -Dwebdriver.driver=chrome'	
+                            bat 'mvn verify -Dcontext=chrome -Dwebdriver.driver=chrome'	
                        }
                        else {
                            currentBuild.result = "UNSTABLE"
